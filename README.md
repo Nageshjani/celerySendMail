@@ -184,9 +184,7 @@ class MyUser(HttpUser):
 
 ```
 
-```bash
-locust -f   locustfile.py
-```
+
 ```bash
 http://localhost:8089/
 ```
@@ -194,13 +192,19 @@ http://localhost:8089/
 ![image](https://user-images.githubusercontent.com/34247973/228896900-757f7121-447d-4b20-b21e-60acfaae39a7.png)
 
 
-```bash
-celery -A my_project_name worker --pool=solo -l info
-```
+
 
 
 ```bash
 python manage.py runserver
+```
+
+```bash
+celery -A my_project_name worker --pool=solo -l info
+```
+
+```bash
+locust -f   locustfile.py
 ```
 
 ```bash
