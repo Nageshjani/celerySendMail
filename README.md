@@ -1,5 +1,10 @@
 ```bash
 project/
+│
+locust/
+├── locustfile.py
+│
+│
 ├── project/
 │   ├── __init__.py 
 │   ├── settings.py 
@@ -21,6 +26,9 @@ pip install redis
 ```
 ```bash
 pip install celery 
+```
+```bash
+pip install locust
 ```
 
 ```bash
