@@ -218,5 +218,8 @@ celery -A project worker --pool=solo -l info
 ![image](https://user-images.githubusercontent.com/34247973/228895332-8ccd981d-25b1-4f0e-aaaf-a90aa7813d8f.png)
 ![image](https://user-images.githubusercontent.com/34247973/228895683-17f1c4e4-d5db-449d-bb25-43f1923d2d6a.png)
 
+![image](https://user-images.githubusercontent.com/34247973/228898822-f0396076-bffc-4e5e-97d9-371b3a464a38.png)
+![image](https://user-images.githubusercontent.com/34247973/228898854-0725ad51-3e72-4fc2-b12c-2289cba9c721.png)
+
 
 
