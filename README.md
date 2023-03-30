@@ -56,6 +56,14 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+
+
 INSTALLED_APPS = [
    
     'app'
@@ -64,15 +72,14 @@ INSTALLED_APPS = [
 ```
 ## REDIS CONFIG
 
-## sh 578
+
 ```bash
 'Open Your Redis File'
 'Double Click on redis-server'
 'Double Click on redis-cli'
 ```
 
-## 579
-## 580
+
 ```bash
 'Type ping in redis-cli'
 'You should get PONG in reply'
@@ -115,48 +122,82 @@ __all__ = ['celery_app']
 ## app/tasks.py 
 ```python
 from celery import shared_task  
-import time
+from django.core.mail import send_mail
   
 @shared_task(bind=True)  
-def test_func(self):  
-    time.sleep(5)
-    for i in range(10):  
-        print(i)  
-        time.sleep(1)
-    return "Completed"  
+def send_email_task(self,subject, message, from_email, recipient_list):
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=from_email,
+        recipient_list=recipient_list,
+        fail_silently=False,
+    )
+    return 'Email Sent!'
+
 
 ```   
     
 ## app/views.py 
 ```python
 from django.shortcuts import render
-from django.http import HttpResponse  
-from project.tasks import test_func  
-  
-  
-def test(request):  
-    test_func.delay()  
-    return HttpResponse("Done")
+from django.http import HttpResponse
+from app.tasks import send_email_task 
+
+def send_email(request):
+    subject = 'Test email'
+    message = 'This is a test email sent using Django Celery Redis'
+    from_email = 'nsemcxgod@gmail.com'
+    
+    recipient_list = ['nsemcxgod@gmail.com']
+                              
+    send_email_task.delay(subject, message, from_email, 
+                                               recipient_list)
+    return HttpResponse("Email has been sent!")
     
 ```
 
 ## project/urls.py  
 ```python
-from app.views import test
+from django.contrib import admin
+from django.urls import path
+from app.views import send_email
 
 urlpatterns = [
-    path('',test)
+    path('admin/', admin.site.urls),
+    path('mail/',send_email)
 ]
+
 ```
 
+## locust/locustfile.py
+```python
+from locust import HttpUser, task, between
 
-## ss 581
+class MyUser(HttpUser):
+    wait_time = between(1, 5)
+
+    @task
+    def my_task(self):
+        self.client.get('http://127.0.0.1:8000/mail/')
+        #self.client.get('/')
+
+```
+
+```bash
+locust -f   locustfile.py
+```
+```bash
+http://localhost:8089/
+```
+![image](https://user-images.githubusercontent.com/34247973/228896827-7296b374-8c54-4927-a32b-0a6a6320dc53.png)
+![image](https://user-images.githubusercontent.com/34247973/228896900-757f7121-447d-4b20-b21e-60acfaae39a7.png)
+
+
 ```bash
 celery -A my_project_name worker --pool=solo -l info
 ```
-```bash
-'Add Your Project Name in place of my_project_name'
-```
+
 
 ```bash
 python manage.py runserver
@@ -165,7 +206,13 @@ python manage.py runserver
 ```bash
 'go to url http://127.0.0.1:8000/
 ```
-## ss 582
-## ss 583
+
 
 celery -A project worker --pool=solo -l info
+
+![image](https://user-images.githubusercontent.com/34247973/228895097-0f14219a-2167-46b6-a648-fb261ea56f91.png)
+![image](https://user-images.githubusercontent.com/34247973/228895332-8ccd981d-25b1-4f0e-aaaf-a90aa7813d8f.png)
+![image](https://user-images.githubusercontent.com/34247973/228895683-17f1c4e4-d5db-449d-bb25-43f1923d2d6a.png)
+
+
+
