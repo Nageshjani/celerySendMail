@@ -78,7 +78,7 @@ INSTALLED_APPS = [
 'Double Click on redis-server'
 'Double Click on redis-cli'
 ```
-
+('https://user-images.githubusercontent.com/34247973/228630214-928a8264-d6e1-40fb-9ca9-8113a617caaa.png')
 
 ```bash
 'Type ping in redis-cli'
